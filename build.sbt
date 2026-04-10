@@ -122,6 +122,17 @@ lazy val kafkaLagExporter =
       },
       skip in publish := true,
       parallelExecution in Test := false,
+      // Fat jar (sbt assembly) settings
+      assembly / mainClass := Some("com.lightbend.kafkalagexporter.MainApp"),
+      assembly / assemblyJarName := s"kafka-lag-exporter-${version.value}.jar",
+      assembly / assemblyMergeStrategy := {
+        case PathList("META-INF", "MANIFEST.MF")            => MergeStrategy.discard
+        case PathList("META-INF", "services", xs @ _*)      => MergeStrategy.concat
+        case PathList("META-INF", xs @ _*)                  => MergeStrategy.discard
+        case PathList("reference.conf")                     => MergeStrategy.concat
+        case PathList("module-info.class")                  => MergeStrategy.discard
+        case _                                              => MergeStrategy.first
+      },
       releaseProcess := Seq[ReleaseStep](
         lintHelmChart, // Lint the Helm Chart for errors
         checkSnapshotDependencies,
