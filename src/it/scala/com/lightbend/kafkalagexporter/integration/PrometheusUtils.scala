@@ -9,7 +9,10 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{HttpRequest, HttpResponse, StatusCodes}
 import akka.http.scaladsl.unmarshalling.Unmarshal
-import com.lightbend.kafkalagexporter.MetricsSink.{CounterDefinition, MetricDefinition}
+import com.lightbend.kafkalagexporter.MetricsSink.{
+  CounterDefinition,
+  MetricDefinition
+}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
 import org.slf4j.Logger
