@@ -29,14 +29,16 @@ jobs:
       - name: Cache Coursier
         uses: coursier/cache-action@v6
 
+      # Build BEFORE CodeQL init so class files exist for build-mode: none
+      - name: Build
+        run: sbt compile
+
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: java
           queries: security-extended
-
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v3
+          build-mode: none
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3

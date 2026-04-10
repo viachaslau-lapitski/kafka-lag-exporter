@@ -154,8 +154,6 @@ lazy val kafkaLagExporter =
 lazy val commonSettings = Seq(
   // scala-java8-compat 1.0.2 (Kafka 3.7+) is binary compatible with 0.8.0 (Akka 2.6)
   libraryDependencySchemes += "org.scala-lang.modules" %% "scala-java8-compat" % VersionScheme.Always,
-  // Fork a child JVM for compilation so CodeQL's build tracer can intercept scalac
-  Compile / fork := true,
   description := "Kafka lag exporter finds and reports Kafka consumer group lag metrics",
   organization := "com.lightbend.kafkalagexporter",
   organizationName := "Lightbend Inc. <http://www.lightbend.com> (2018-2022), Sean Glover <https://seanglover.com/> (2022+)",
