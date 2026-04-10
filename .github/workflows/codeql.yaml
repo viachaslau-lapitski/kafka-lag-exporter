@@ -21,13 +21,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Java 17
-        uses: actions/setup-java@v4
+      - name: Setup Java 17 + sbt
+        uses: olafurpg/setup-scala@v13
         with:
-          distribution: temurin
-          java-version: '17'
+          java-version: openjdk@1.17
 
-      - name: Cache sbt
+      - name: Cache Coursier
         uses: coursier/cache-action@v6
 
       - name: Initialize CodeQL
