@@ -6,6 +6,7 @@
 package com.lightbend.kafkalagexporter.integration
 
 import akka.actor.testkit.typed.scaladsl.ActorTestKit
+import akka.http.scaladsl.Http
 import akka.kafka.testkit.scaladsl.KafkaSpec
 import akka.stream.testkit.scaladsl.StreamTestKit.assertAllStagesStopped
 import com.lightbend.kafkalagexporter.Metrics._
@@ -114,6 +115,7 @@ trait IntegrationSpec
         )
 
         simulator.shutdown()
+        Http(system).shutdownAllConnectionPools().futureValue
       }
     }
 
@@ -170,6 +172,7 @@ trait IntegrationSpec
         eventually(
           scrapeAndAssert(exporterHostPort, "Assert poll time metric", rule)
         )
+        Http(system).shutdownAllConnectionPools().futureValue
       }
     }
   }
