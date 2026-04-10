@@ -36,12 +36,9 @@ jobs:
           queries: security-extended
           build-mode: manual
 
-      # Kill any pre-existing sbt daemon (started outside CodeQL's tracer)
-      # then compile fresh so the new JVM inherits CodeQL's JAVA_TOOL_OPTIONS
       - name: Build under CodeQL trace
         run: |
-          sbt --kill 2>/dev/null || true
-          sbt --no-server compile
+          sbt --no-server clean compile
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
