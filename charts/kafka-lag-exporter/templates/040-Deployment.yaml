@@ -29,7 +29,7 @@ spec:
       hostAliases:
 {{ toYaml .Values.hostAliases | indent 8 }}
       {{- end }}
-      {{- if or .Values.watchers.strimzi .Values.serviceAccount.create }}
+      {{- if .Values.serviceAccount.create }}
       {{- if .Values.serviceAccount.nameOverride }}
       serviceAccountName: {{ .Values.serviceAccount.nameOverride }}
       {{- else }}

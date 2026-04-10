@@ -137,9 +137,6 @@ data:
       reporters.influxdb.async = {{ .Values.reporters.influxdb.async }}
       {{- end  }}
       sinks = [{{ join ", " $sinks }}]
-      watchers = {
-        strimzi = "{{ .Values.watchers.strimzi }}"
-      }
       metric-whitelist = [
         {{- $lastIndex := sub (len .Values.metricWhitelist) 1}}
         {{- range $i, $whitelist := .Values.metricWhitelist }}

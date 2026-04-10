@@ -85,12 +85,7 @@ reporters:
     password: ""
     ## Flag to enable influxdb async non-blocking write mode to send metrics
     async: true
-## Watchers will automatically discover and forget Kafka clusters
-watchers:
-  ## The Strimzi Cluster Watcher automatically watches for `kafka.strimzi.io` group, `Kafka` kind resources and will
-  ## configure the Kafka Lag Exporter appropriately.
-  strimzi: false
-## Applicable only in non-Strimzi installation. If true, a service account will be created and bind to the deployment.
+## If true, a service account will be created and bind to the deployment.
 ## Otherwise, the default service account for the namespace will be used.
 serviceAccount:
   create: false

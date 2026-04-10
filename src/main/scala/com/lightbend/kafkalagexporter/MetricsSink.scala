@@ -13,12 +13,23 @@ object MetricsSink {
   final case class Stop(sender: ActorRef[KafkaClusterManager.Message])
       extends MetricsSink.Message
 
+  sealed trait MetricDefinition {
+    def name: String
+    def help: String
+    def labels: List[String]
+  }
   final case class GaugeDefinition(
       name: String,
       help: String,
       labels: List[String]
-  )
-  type MetricDefinitions = List[GaugeDefinition]
+  ) extends MetricDefinition
+  final case class CounterDefinition(
+      name: String,
+      help: String,
+      labels: List[String]
+  ) extends MetricDefinition
+
+  type MetricDefinitions = List[MetricDefinition]
 
   trait ClusterMetric extends Metric {
     def clusterName: String
@@ -26,7 +37,7 @@ object MetricsSink {
 
   trait Metric {
     def labels: List[String]
-    def definition: GaugeDefinition
+    def definition: MetricDefinition
   }
 
   trait MetricValue extends ClusterMetric {

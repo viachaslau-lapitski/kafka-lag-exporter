@@ -37,8 +37,6 @@ lazy val kafkaLagExporter =
         AkkaStreams,
         AkkaStreamsProtobuf,
         AkkaInfluxDB,
-        Fabric8Model,
-        Fabric8Client,
         Prometheus,
         PrometheusHotSpot,
         PrometheusHttpServer,
@@ -143,6 +141,8 @@ lazy val kafkaLagExporter =
     )
 
 lazy val commonSettings = Seq(
+  // scala-java8-compat 1.0.2 (Kafka 3.7+) is binary compatible with 0.8.0 (Akka 2.6)
+  libraryDependencySchemes += "org.scala-lang.modules" %% "scala-java8-compat" % VersionScheme.Always,
   description := "Kafka lag exporter finds and reports Kafka consumer group lag metrics",
   organization := "com.lightbend.kafkalagexporter",
   organizationName := "Lightbend Inc. <http://www.lightbend.com> (2018-2022), Sean Glover <https://seanglover.com/> (2022+)",

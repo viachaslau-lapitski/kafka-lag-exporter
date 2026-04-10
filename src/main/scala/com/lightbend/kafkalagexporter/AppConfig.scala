@@ -103,8 +103,6 @@ object AppConfig {
           labels
         )
       }
-    val strimziWatcher = c.getString("watchers.strimzi").toBoolean
-
     AppConfig(
       pollInterval,
       lookupTable,
@@ -112,8 +110,7 @@ object AppConfig {
       clientGroupId,
       kafkaClientTimeout,
       kafkaRetries,
-      clusters,
-      strimziWatcher
+      clusters
     )
   }
 
@@ -202,8 +199,7 @@ final case class AppConfig(
     clientGroupId: String,
     clientTimeout: FiniteDuration,
     retries: Int,
-    clusters: List[KafkaCluster],
-    strimziWatcher: Boolean
+    clusters: List[KafkaCluster]
 ) {
   override def toString(): String = {
     val clusterString =
@@ -222,8 +218,6 @@ final case class AppConfig(
        |$sinksString
        |Statically defined Clusters:
        |$clusterString
-       |Watchers:
-       |  Strimzi: $strimziWatcher
      """.stripMargin
   }
 

@@ -9,7 +9,7 @@ import com.lightbend.kafkalagexporter.MetricsSink._
 
 object Metrics {
   sealed trait ClusterMessage extends Message with Metric {
-    def definition: GaugeDefinition
+    def definition: MetricDefinition
     def clusterName: String
     override def labels: List[String] =
       List(
@@ -18,14 +18,14 @@ object Metrics {
   }
 
   final case class ClusterValueMessage(
-      definition: GaugeDefinition,
+      definition: MetricDefinition,
       clusterName: String,
       value: Double
   ) extends ClusterMessage
       with MetricValue
 
   sealed trait TopicPartitionMessage extends Message with Metric {
-    def definition: GaugeDefinition
+    def definition: MetricDefinition
     def clusterName: String
     def topicPartition: Domain.TopicPartition
     override def labels: List[String] =
@@ -37,21 +37,21 @@ object Metrics {
   }
 
   final case class TopicPartitionValueMessage(
-      definition: GaugeDefinition,
+      definition: MetricDefinition,
       clusterName: String,
       topicPartition: Domain.TopicPartition,
       value: Double
   ) extends TopicPartitionMessage
       with MetricValue
   final case class TopicPartitionRemoveMetricMessage(
-      definition: GaugeDefinition,
+      definition: MetricDefinition,
       clusterName: String,
       topicPartition: Domain.TopicPartition
   ) extends TopicPartitionMessage
       with RemoveMetric
 
   sealed trait GroupMessage extends Message with Metric {
-    def definition: GaugeDefinition
+    def definition: MetricDefinition
     def clusterName: String
     def group: String
     override def labels: List[String] =
@@ -62,21 +62,21 @@ object Metrics {
   }
 
   final case class GroupValueMessage(
-      definition: GaugeDefinition,
+      definition: MetricDefinition,
       clusterName: String,
       group: String,
       value: Double
   ) extends GroupMessage
       with MetricValue
   final case class GroupRemoveMetricMessage(
-      definition: GaugeDefinition,
+      definition: MetricDefinition,
       clusterName: String,
       group: String
   ) extends GroupMessage
       with RemoveMetric
 
   sealed trait GroupPartitionMessage extends Message with Metric {
-    def definition: GaugeDefinition
+    def definition: MetricDefinition
     def clusterName: String
     def gtp: Domain.GroupTopicPartition
     override def labels: List[String] =
@@ -92,21 +92,21 @@ object Metrics {
   }
 
   final case class GroupPartitionValueMessage(
-      definition: GaugeDefinition,
+      definition: MetricDefinition,
       clusterName: String,
       gtp: Domain.GroupTopicPartition,
       value: Double
   ) extends GroupPartitionMessage
       with MetricValue
   final case class GroupPartitionRemoveMetricMessage(
-      definition: GaugeDefinition,
+      definition: MetricDefinition,
       clusterName: String,
       gtp: Domain.GroupTopicPartition
   ) extends GroupPartitionMessage
       with RemoveMetric
 
   sealed trait GroupTopicMessage extends Message with Metric {
-    def definition: GaugeDefinition
+    def definition: MetricDefinition
     def clusterName: String
     def group: String
     def topic: String
@@ -119,7 +119,7 @@ object Metrics {
   }
 
   final case class GroupTopicValueMessage(
-      definition: GaugeDefinition,
+      definition: MetricDefinition,
       clusterName: String,
       group: String,
       topic: String,
@@ -127,7 +127,7 @@ object Metrics {
   ) extends GroupTopicMessage
       with MetricValue
   final case class GroupTopicRemoveMetricMessage(
-      definition: GaugeDefinition,
+      definition: MetricDefinition,
       clusterName: String,
       group: String,
       topic: String
@@ -136,13 +136,13 @@ object Metrics {
 
   val topicPartitionLabels = List("cluster_name", "topic", "partition")
 
-  val LatestOffsetMetric = GaugeDefinition(
+  val LatestOffsetMetric = CounterDefinition(
     "kafka_partition_latest_offset",
     "Latest offset of a partition",
     topicPartitionLabels
   )
 
-  val EarliestOffsetMetric = GaugeDefinition(
+  val EarliestOffsetMetric = CounterDefinition(
     "kafka_partition_earliest_offset",
     "Earliest offset of a partition",
     topicPartitionLabels
@@ -180,7 +180,7 @@ object Metrics {
     "client_id"
   )
 
-  val LastGroupOffsetMetric = GaugeDefinition(
+  val LastGroupOffsetMetric = CounterDefinition(
     "kafka_consumergroup_group_offset",
     "Last group consumed offset of a partition",
     groupPartitionLabels

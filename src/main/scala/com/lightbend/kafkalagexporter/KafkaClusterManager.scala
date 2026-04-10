@@ -9,7 +9,6 @@ import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, Behavior, ChildFailed}
 import akka.util.Timeout
 import com.lightbend.kafkalagexporter.KafkaClient.KafkaClientContract
-import com.lightbend.kafkalagexporter.watchers.Watcher
 
 import scala.concurrent.duration._
 import scala.util.{Failure, Success}
@@ -36,13 +35,11 @@ object KafkaClusterManager {
       appConfig
     )
 
-    if (appConfig.clusters.isEmpty && !appConfig.strimziWatcher)
+    if (appConfig.clusters.isEmpty)
       context.log.info(
-        "No watchers are defined and no clusters are statically configured.  Nothing to do."
+        "No clusters are statically configured.  Nothing to do."
       )
 
-    val watchers: Seq[ActorRef[Watcher.Message]] =
-      Watcher.createClusterWatchers(context, appConfig)
     val reporters: List[ActorRef[MetricsSink.Message]] = metricsSinks.map {
       metricsSink: NamedCreator =>
         context.spawn(
@@ -58,8 +55,7 @@ object KafkaClusterManager {
       appConfig,
       clientCreator,
       reporters,
-      collectors = Map.empty,
-      watchers
+      collectors = Map.empty
     )
   }
 
@@ -67,8 +63,7 @@ object KafkaClusterManager {
       appConfig: AppConfig,
       clientCreator: KafkaCluster => KafkaClientContract,
       reporters: List[ActorRef[MetricsSink.Message]],
-      collectors: Map[KafkaCluster, ActorRef[ConsumerGroupCollector.Message]],
-      watchers: Seq[ActorRef[Watcher.Message]]
+      collectors: Map[KafkaCluster, ActorRef[ConsumerGroupCollector.Message]]
   ): Behavior[Message] =
     Behaviors.receive[Message] {
       case (context, ClusterAdded(cluster)) =>
@@ -88,8 +83,7 @@ object KafkaClusterManager {
           appConfig,
           clientCreator,
           reporters,
-          collectors + (cluster -> collector),
-          watchers
+          collectors + (cluster -> collector)
         )
 
       case (context, ClusterRemoved(cluster)) =>
@@ -102,16 +96,14 @@ object KafkaClusterManager {
               appConfig,
               clientCreator,
               reporters,
-              collectors - cluster,
-              watchers
+              collectors - cluster
             )
           case None =>
-            manager(appConfig, clientCreator, reporters, collectors, watchers)
+            manager(appConfig, clientCreator, reporters, collectors)
         }
 
       case (context, _: Stop) =>
         context.log.info("Attempting graceful shutdown")
-        watchers.foreach(_ ! Watcher.Stop)
         collectors.foreach { case (_, collector) =>
           collector ! ConsumerGroupCollector.Stop
         }

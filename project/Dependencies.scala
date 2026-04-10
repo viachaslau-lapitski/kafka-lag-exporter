@@ -3,11 +3,10 @@ import sbt._
 object Version {
   val Scala = "2.12.17"
   val Akka = "2.6.20"
-  val Prometheus = "0.15.0"
-  val Fabric8 = "4.11.2"
-  val Kafka = "3.2.3"
-  val Testcontainers = "1.17.5"
-  val IAMAuth = "1.1.4"
+  val Prometheus = "0.16.0"
+  val Kafka = "3.7.2"
+  val Testcontainers = "1.20.4"
+  val IAMAuth = "2.0.3"
   val Redis = "3.42"
 }
 
@@ -24,7 +23,7 @@ object Dependencies {
   private val log4jExclusionRule = ExclusionRule("log4j")
   private val slf4jExclusionRule = ExclusionRule("org.slf4j")
 
-  val LightbendConfig = "com.typesafe" % "config" % "1.3.2"
+  val LightbendConfig = "com.typesafe" % "config" % "1.4.3"
   val Kafka =
     "org.apache.kafka" %% "kafka" % Version.Kafka excludeAll (jacksonExclusionRule, log4jExclusionRule, slf4jExclusionRule)
   val Akka = "com.typesafe.akka" %% "akka-actor" % Version.Akka
@@ -35,14 +34,12 @@ object Dependencies {
     "com.typesafe.akka" %% "akka-protobuf" % Version.Akka
   val AkkaInfluxDB =
     "com.lightbend.akka" %% "akka-stream-alpakka-influxdb" % "3.0.4"
-  val Logback = "ch.qos.logback" % "logback-classic" % "1.4.4"
+  val Logback = "ch.qos.logback" % "logback-classic" % "1.5.12"
   val Prometheus = "io.prometheus" % "simpleclient" % Version.Prometheus
   val PrometheusHotSpot =
     "io.prometheus" % "simpleclient_hotspot" % Version.Prometheus
   val PrometheusHttpServer =
     "io.prometheus" % "simpleclient_httpserver" % Version.Prometheus
-  val Fabric8Model = "io.fabric8" % "kubernetes-model" % Version.Fabric8
-  val Fabric8Client = "io.fabric8" % "kubernetes-client" % Version.Fabric8
   val ScalaJava8Compat =
     "org.scala-lang.modules" %% "scala-java8-compat" % "1.0.2"
   val AkkaHttp = "com.typesafe.akka" %% "akka-http" % "10.2.10"
@@ -52,12 +49,12 @@ object Dependencies {
   /* Test */
   val AkkaTypedTestKit =
     "com.typesafe.akka" %% "akka-actor-testkit-typed" % Version.Akka % Test
-  val ScalaTest = "org.scalatest" %% "scalatest" % "3.2.14" % Test
+  val ScalaTest = "org.scalatest" %% "scalatest" % "3.2.19" % Test
   val AkkaStreamsTestKit =
     "com.typesafe.akka" %% "akka-stream-testkit" % Version.Akka % Test
-  val MockitoScala = "org.mockito" %% "mockito-scala" % "1.17.12" % Test
+  val MockitoScala = "org.mockito" %% "mockito-scala" % "1.17.37" % Test
   val AlpakkaKafkaTestKit =
-    "com.typesafe.akka" %% "akka-stream-kafka-testkit" % "2.0.7" % Test excludeAll (jacksonExclusionRule, log4jExclusionRule, slf4jExclusionRule)
+    "com.typesafe.akka" %% "akka-stream-kafka-testkit" % "2.1.1" % Test excludeAll (jacksonExclusionRule, log4jExclusionRule, slf4jExclusionRule)
   val TestcontainersKafka =
     "org.testcontainers" % "kafka" % Version.Testcontainers % Test
   val TestcontainersInfluxDb =
