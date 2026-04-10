@@ -115,21 +115,24 @@ class PrometheusEndpointSink private (
             .set(m.value)
         case cd: CounterDefinition =>
           val key = (cd, labelValues)
+          val isFirstReport = !counterPreviousValues.contains(key)
           val prev = counterPreviousValues.getOrElse(key, 0.0)
           val delta = m.value - prev
+          val counter = counters.getOrElse(
+            cd,
+            throw new IllegalArgumentException(
+              s"No metric with definition ${cd.name} registered"
+            )
+          )
           if (delta > 0) {
-            counters
-              .getOrElse(
-                cd,
-                throw new IllegalArgumentException(
-                  s"No metric with definition ${cd.name} registered"
-                )
-              )
-              .labels(labelValues: _*)
-              .inc(delta)
+            counter.labels(labelValues: _*).inc(delta)
             counterPreviousValues = counterPreviousValues.updated(key, m.value)
           } else if (delta < 0) {
             // Counter reset (e.g. topic deletion or log compaction) — reset tracking baseline
+            counterPreviousValues = counterPreviousValues.updated(key, m.value)
+          } else if (isFirstReport) {
+            // Initialize counter so it appears in Prometheus output even when the starting value is 0
+            counter.labels(labelValues: _*).inc(0)
             counterPreviousValues = counterPreviousValues.updated(key, m.value)
           }
       }
