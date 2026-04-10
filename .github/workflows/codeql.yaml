@@ -35,8 +35,8 @@ jobs:
           languages: java
           queries: security-extended
 
-      - name: Build (for CodeQL tracing)
-        run: sbt compile
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
