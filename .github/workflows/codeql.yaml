@@ -29,16 +29,19 @@ jobs:
       - name: Cache Coursier
         uses: coursier/cache-action@v6
 
-      # Build BEFORE CodeQL init so class files exist for build-mode: none
-      - name: Build
-        run: sbt compile
-
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: java
           queries: security-extended
-          build-mode: none
+          build-mode: manual
+
+      # Kill any pre-existing sbt daemon (started outside CodeQL's tracer)
+      # then compile fresh so the new JVM inherits CodeQL's JAVA_TOOL_OPTIONS
+      - name: Build under CodeQL trace
+        run: |
+          sbt --kill 2>/dev/null || true
+          sbt --no-server compile
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
