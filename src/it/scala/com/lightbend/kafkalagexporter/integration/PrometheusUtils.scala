@@ -9,7 +9,7 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{HttpRequest, HttpResponse, StatusCodes}
 import akka.http.scaladsl.unmarshalling.Unmarshal
-import com.lightbend.kafkalagexporter.MetricsSink.GaugeDefinition
+import com.lightbend.kafkalagexporter.MetricsSink.{CounterDefinition, MetricDefinition}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
 import org.slf4j.Logger
@@ -67,11 +67,15 @@ trait PrometheusUtils extends ScalaFutures with Matchers {
 
   object Rule {
     def create(
-        definition: GaugeDefinition,
+        definition: MetricDefinition,
         assertion: String => _,
         labelValues: String*
     ): Rule = {
-      val name = definition.name
+      // Prometheus Counter metrics are exposed with _total suffix
+      val name = definition match {
+        case _: CounterDefinition => definition.name + "_total"
+        case _                    => definition.name
+      }
       val labels = definition.labels
         .zip(labelValues)
         .map { case (k, v) => s"""$k="$v"""" }
